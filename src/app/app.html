@@ -1,0 +1,197 @@
+<div class="min-vh-100 bg-light">
+  <!-- Converted header to Material toolbar with Bootstrap classes -->
+  <mat-toolbar class="bg-white border-bottom shadow-sm">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center">
+        <mat-icon class="text-primary me-2">description</mat-icon>
+        <h1 class="h4 mb-0 fw-bold text-dark">DocuCopilot</h1>
+        <mat-chip class="ms-3">
+          <mat-icon matChipAvatar>auto_fix_high</mat-icon>
+          AI-Powered
+        </mat-chip>
+      </div>
+    </div>
+  </mat-toolbar>
+
+  <div class="container-fluid py-4">
+    <div class="row justify-content-center">
+      <div class="col-12 col-xl-10">
+        <!-- Converted process flow to Material stepper with Bootstrap grid -->
+        <mat-card class="mb-4">
+          <mat-card-content>
+            <mat-horizontal-stepper [selectedIndex]="getStepIndex()" class="mb-4">
+              <mat-step [completed]="selectedTemplate !== null">
+                <ng-template matStepLabel>Choose Template</ng-template>
+                <div class="text-center py-3">
+                  <mat-icon class="text-primary mb-2"
+                    style="font-size: 48px; height: 48px; width: 48px;">assignment</mat-icon>
+                  <p class="text-muted">Select the output format you want</p>
+                </div>
+              </mat-step>
+
+              <mat-step [completed]="uploadedFile !== null">
+                <ng-template matStepLabel>Upload Document</ng-template>
+                <div class="text-center py-3">
+                  <mat-icon class="text-primary mb-2"
+                    style="font-size: 48px; height: 48px; width: 48px;">cloud_upload</mat-icon>
+                  <p class="text-muted">Upload your source material</p>
+                </div>
+              </mat-step>
+
+              <mat-step [completed]="processingStatus === 'completed'">
+                <ng-template matStepLabel>AI Processing</ng-template>
+                <div class="text-center py-3">
+                  <mat-icon class="text-success mb-2"
+                    style="font-size: 48px; height: 48px; width: 48px;">smart_toy</mat-icon>
+                  <p class="text-muted">Get your formatted document</p>
+                </div>
+              </mat-step>
+            </mat-horizontal-stepper>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Converted tabs to Material tabs -->
+        <mat-card>
+          <mat-tab-group [(selectedIndex)]="activeTabIndex">
+            <mat-tab label="Document Templates">
+              <div class="p-4">
+                <!-- Template Selection -->
+                <div class="mb-4">
+                  <h2 class="h3 fw-bold mb-4">Choose Your Template</h2>
+                  <div class="row g-3">
+                    <div class="col-12 col-sm-6 col-lg-3" *ngFor="let template of templates">
+                      <!-- Converted template cards to Material cards with Bootstrap grid -->
+                      <mat-card class="h-100 cursor-pointer template-card"
+                        [class.selected]="selectedTemplate === template.id" (click)="selectTemplate(template.id)">
+                        <mat-card-content class="text-center">
+                          <div class="template-icon mb-3" [ngClass]="template.color">
+                            <mat-icon class="text-white">{{ template.icon || 'description' }}</mat-icon>
+                          </div>
+                          <mat-card-title class="h6">{{ template.name }}</mat-card-title>
+                          <mat-card-subtitle class="small mb-3">{{ template.description }}</mat-card-subtitle>
+                          <mat-chip class="small">{{ template.category }}</mat-chip>
+                        </mat-card-content>
+                      </mat-card>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Upload and Process Section -->
+                <mat-card *ngIf="selectedTemplate" class="mt-4">
+                  <mat-card-header>
+                    <mat-card-title class="d-flex align-items-center">
+                      <mat-icon class="me-2">upload_file</mat-icon>
+                      Upload & Process Document
+                    </mat-card-title>
+                  </mat-card-header>
+
+                  <mat-card-content>
+                    <p class="text-muted mb-3">
+                      Selected template:
+                      <span class="fw-medium text-dark">{{ getSelectedTemplateName() }}</span>
+                    </p>
+
+                    <!-- Converted file upload area to Bootstrap styling -->
+                    <div class="border border-2 border-dashed rounded p-5 text-center mb-4 upload-area">
+                      <input type="file" id="file-upload" class="d-none" accept=".pdf,.doc,.docx,.txt,.md"
+                        (change)="onFileSelected($event)">
+                      <label for="file-upload" class="cursor-pointer d-block">
+                        <mat-icon class="text-muted mb-3"
+                          style="font-size: 48px; height: 48px; width: 48px;">cloud_upload</mat-icon>
+                        <h5 class="mb-2">
+                          {{ uploadedFile ? uploadedFile.name : 'Drop your file here or click to browse' }}
+                        </h5>
+                        <p class="text-muted small">Supports PDF, DOC, DOCX, TXT, MD files</p>
+                      </label>
+                    </div>
+
+                    <!-- Converted file info and process button to Material components -->
+                    <mat-card *ngIf="uploadedFile" class="bg-light">
+                      <mat-card-content class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                          <mat-icon class="text-primary me-3" style="font-size: 32px;">description</mat-icon>
+                          <div>
+                            <h6 class="mb-1">{{ uploadedFile.name }}</h6>
+                            <small class="text-muted">{{ formatFileSize(uploadedFile.size) }}</small>
+                          </div>
+                        </div>
+                        <button mat-raised-button color="primary" [disabled]="processingStatus === 'processing'"
+                          (click)="processDocument()">
+                          <mat-spinner *ngIf="processingStatus === 'processing'" diameter="20"
+                            class="me-2"></mat-spinner>
+                          <mat-icon *ngIf="processingStatus !== 'processing'" class="me-2">smart_toy</mat-icon>
+                          {{ processingStatus === 'processing' ? 'Processing...' : 'Process with AI' }}
+                        </button>
+                      </mat-card-content>
+                    </mat-card>
+
+                    <!-- Converted success message to Material card with success styling -->
+                    <mat-card *ngIf="processingStatus === 'completed' && processedDocument"
+                      class="border-success bg-light-success mt-4">
+                      <mat-card-content>
+                        <div class="d-flex align-items-center mb-3">
+                          <mat-icon class="text-success me-2">check_circle</mat-icon>
+                          <h6 class="text-success mb-0">Processing Complete!</h6>
+                        </div>
+                        <p class="text-success-emphasis mb-4">{{ processedDocument }}</p>
+                        <div class="d-flex gap-2">
+                          <button mat-raised-button color="accent">
+                            <mat-icon class="me-2">download</mat-icon>
+                            Download Result
+                          </button>
+                          <button mat-stroked-button>
+                            <mat-icon class="me-2">preview</mat-icon>
+                            Preview
+                          </button>
+                        </div>
+                      </mat-card-content>
+                    </mat-card>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+            </mat-tab>
+
+            <mat-tab label="Processing History">
+              <div class="p-4">
+                <h5 class="fw-bold mb-4">Recent Processing History</h5>
+                <!-- Converted history list to Material list -->
+                <mat-list class="border rounded shadow-sm p-2">
+                  <mat-list-item *ngFor="let item of recentProcessing; let last = last"
+                    class="p-3 mb-2 rounded hover-card">
+                    <div class="d-flex justify-content-between align-items-center w-100">
+
+                      <!-- Left: Status Icon + Template/File Info -->
+                      <div class="d-flex align-items-center gap-3">
+                        <mat-icon [ngClass]="getStatusClass(item.status)" class="status-icon"
+                          matTooltip="{{ item.status | titlecase }}">
+                          {{ getStatusIcon(item.status) }}
+                        </mat-icon>
+                        <div>
+                          <h6 class="mb-1 fw-semibold">{{ item.template }}</h6>
+                          <small class="text-muted">{{ item.file }}</small>
+                        </div>
+                      </div>
+
+                      <!-- Right: Time + Download -->
+                      <div class="text-end flex-column align-items-end gap-1">
+                        <small class="text-muted">{{ item.time }}</small>
+                        <button *ngIf="item.status === 'completed'" mat-icon-button color="primary"
+                          aria-label="Download file">
+                          <mat-icon>download</mat-icon>
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- Divider -->
+                    <mat-divider *ngIf="!last" class="mt-3"></mat-divider>
+                  </mat-list-item>
+                </mat-list>
+
+              </div>
+            </mat-tab>
+          </mat-tab-group>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</div>

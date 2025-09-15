@@ -1,0 +1,123 @@
+/* Updated CSS for Material Design and Bootstrap integration */
+
+/* Template card styling */
+.template-card {
+  transition: all 0.3s ease;
+  cursor: pointer;
+  background-color:#e8eef3;
+}
+
+.template-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.template-card.selected {
+  border: 2px solid #1976d2 !important;
+  background-color: #e3f2fd !important;
+}
+
+.template-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+/* Template icon colors */
+.bg-blue-500 {
+  background-color: #1976d2;
+}
+.bg-green-500 {
+  background-color: #388e3c;
+}
+.bg-purple-500 {
+  background-color: #7b1fa2;
+}
+.bg-orange-500 {
+  background-color: #f57c00;
+}
+.bg-cyan-500 {
+  background-color: #0097a7;
+}
+.bg-red-500 {
+  background-color: #d32f2f;
+}
+.bg-indigo-500 {
+  background-color: #303f9f;
+}
+.bg-teal-500 {
+  background-color: #00796b;
+}
+
+/* Status colors for Material icons */
+.text-yellow-500 {
+  color: #fbc02d;
+}
+.text-green-500 {
+  color: #388e3c;
+}
+.text-red-500 {
+  color: #d32f2f;
+}
+.text-primary {
+  color: #1976d2;
+}
+.text-success {
+  color: #388e3c;
+}
+
+/* Upload area styling */
+.upload-area {
+  border-color: #e0e0e0 !important;
+  transition: all 0.3s ease;
+}
+
+.upload-area:hover {
+  border-color: #1976d2 !important;
+  background-color: #f5f5f5;
+}
+
+/* Success card styling */
+.bg-light-success {
+  background-color: #e8f5e8 !important;
+}
+
+.border-success {
+  border-color: #388e3c !important;
+}
+
+.text-success-emphasis {
+  color: #2e7d32;
+}
+
+/* Cursor pointer utility */
+.cursor-pointer {
+  cursor: pointer;
+}
+
+/* Material stepper customization */
+::ng-deep .mat-stepper-horizontal {
+  margin-bottom: 0;
+}
+
+::ng-deep .mat-step-header {
+  pointer-events: none;
+}
+
+/* Material toolbar customization */
+::ng-deep .mat-toolbar {
+  background: white !important;
+  color: inherit !important;
+}
+
+.hover-card {
+  transition: all 0.2s ease-in-out;
+  &:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  }
+}
